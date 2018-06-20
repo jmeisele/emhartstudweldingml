@@ -21,7 +21,7 @@ df= df.drop(columns = ['Peak / Drop voltage','Remark','Pilot Weldcurrent Arc Vol
                        'Weldcurrent Maximum (Is)','Weld Energy  Reference (Es)',\
                        'Weld Energy  Minimum (Es)','Weld Energy  Maximum (Es)'])
 
-#Start cleaning and transforming the data
+#Start  cleaning and transforming the data
 df['Application'] = df['Application'].astype('category')
 df['Date / Time'] = df['Date / Time'].astype(np.datetime64)
 df['Device Name'] = df['Device Name'].astype('category')
@@ -60,16 +60,20 @@ df['Penetration  Minimum (P)'].replace(regex = True, inplace = True, to_replace 
 df['Penetration  Maximum (P)'].replace(regex = True, inplace = True, to_replace = r'\D', value = r'')
 df['Penetration  Actual (P)'].replace(regex = True, inplace = True, to_replace = r'\D', value = r'')
 
-#Split duplicate values into seperate columns
-df['Weldcurrent Reference (Is)']
-df['Weldcurrent Actual (Is)']
+# Strip the white space from cells and replace with 0's
+df['Carbody ID:'] = df['Carbody ID:'].str.strip()
+
+#Split duplicate values into seperate columns and strip the alph characters out
+df['A'], df['B'] = df['Weldcurrent Reference (Is)'].str.split('/', 1).str
+df['A'].replace(regex = True, inplace = True, to_replace = r'\D', value = r'')
+df['B'].replace(regex = True, inplace = True, to_replace = r'\D', value = r'')
+df['C'], df['D'] = df['Weldcurrent Actual (Is)'].str.split('/', 1).str
+df['C'].replace(regex = True, inplace = True, to_replace = r'\D', value = r'')
+df['D'].replace(regex = True, inplace = True, to_replace = r'\D', value = r'')
 
 # Strip the white space from cells and replace with 0's
 df['Carbody ID:'] = df['Carbody ID:'].str.strip()
 df['Carbody ID:'] = df['Carbody ID:'].fillna(0)
-
-# We cant convert since there are categorical values such as 'Ghost' and 'Hybrid'
-#df['Carbody ID:'] = df['Carbody ID:'].apply(pd.to_numeric)
 
 # Generate csv of tidy data
 df.to_csv("C:\\Users\\EISELJA\\Desktop\\EmhartData\\ProcessData\\Test.csv")
