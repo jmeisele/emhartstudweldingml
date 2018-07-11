@@ -135,14 +135,19 @@ df.head()
 # TODO # Generate csv of tidy data
 #df.to_csv("C:\\Users\\EISELJA\\Desktop\\EmhartData\\ProcessData.csv")
 
+#Sample only FS73 160RB400
+rb400 = df[df['Device Name'] == 'FS73 160RB400']
+rb400.drop(columns = 'Device Name', inplace = True, axis = 1)
+
+
 # Aggregate the dataset between independent variables X and dependent variable y
-X = df.iloc[:, 1:13]
-y = df.iloc[:, 0]
+X = rb400.iloc[:, 1:12]
+y = rb400.iloc[:, 0]
 
 # Encode categorical data [Device Name]
 from sklearn.preprocessing import LabelEncoder
 enc = LabelEncoder()
-X.iloc[:, 0] = enc.fit_transform(X.iloc[:, 0])
+#X.iloc[:, 0] = enc.fit_transform(X.iloc[:, 0])
 y = enc.fit_transform(y)
 
 # Split the dataset into the Training set and Test set
@@ -150,39 +155,19 @@ from sklearn.model_selection import train_test_split
 X_train, X_test, y_train, y_test = train_test_split(X, y, test_size = 0.2, random_state = 0)
 
 # Normalize the data with feature scaling
-# Feature Scaling
 from sklearn.preprocessing import StandardScaler
 sc = StandardScaler()
 X_train = sc.fit_transform(X_train)
 X_test = sc.transform(X_test)
 
-# TODO Importing the Keras libraries and packages and ANN creation with 2 hidden layers
-import keras
-from keras.models import Sequential
-from keras.layers import Dense
+# Fitting Decision Tree Classification to the Training set
+from sklearn.tree import DecisionTreeClassifier
+classifier = DecisionTreeClassifier(criterion = 'entropy', random_state = 0)
+classifier.fit(X_train, y_train)
 
-# TODO Initialising the ANN
-classifier = Sequential()
-
-# TODO Adding the input layer and the first hidden layer
-classifier.add(Dense(output_dim = 6, init = 'uniform', activation = 'relu', input_dim = 11))
-
-# TODO Adding the second hidden layer
-classifier.add(Dense(output_dim = 6, init = 'uniform', activation = 'relu'))
-
-# TODO Adding the output layer
-classifier.add(Dense(output_dim = 1, init = 'uniform', activation = 'sigmoid'))
-
-# TODO Compiling the ANN
-classifier.compile(optimizer = 'adam', loss = 'binary_crossentropy', metrics = ['accuracy'])
-
-# TODO Fitting the ANN to the Training set
-classifier.fit(X_train, y_train, batch_size = 10, nb_epoch = 100)
-
-# TODO Predicting the Test set results
+# Predicting the Test set results
 y_pred = classifier.predict(X_test)
-y_pred = (y_pred > 0.5)
 
-# TODO Making the Confusion Matrix
+# Making the Confusion Matrix
 from sklearn.metrics import confusion_matrix
 cm = confusion_matrix(y_test, y_pred)
