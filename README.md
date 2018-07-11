@@ -5,6 +5,6 @@ Emhart Stud Welding Machine Learning Project for Client: Process Engineer
 
 - [X] **Obtain the Data**
 - [X] **Sort and clean the data**
-- [ ] **ExploratoryDataAnalysis**
-- [ ] **Model The Data**
-- [ ] **iNterpret the results**
+- [X] **ExploratoryDataAnalysis**
+- [X] **Model The Data**
+- [X] **iNterpret the results**
